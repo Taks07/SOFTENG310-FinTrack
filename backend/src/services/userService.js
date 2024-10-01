@@ -35,8 +35,9 @@ const checkEmailExists = async (email) => {
         text: 'SELECT * FROM users WHERE email = $1',
         values: [email],
     };
+
     try { const result = await pool.query(query);
-    return result.rows.length > 0;
+        return result.rows.length > 0;
     } catch (error) {
         console.error('An error occurred while checking email:', error);
         return false;
@@ -48,13 +49,19 @@ const checkPasswordCorrect = async (email, password) => {
         text: 'SELECT password FROM users WHERE email = $1',
         values: [email],
     };
-    try {const result = await pool.query(query);
-            if (result.rows.length === 0) {
-                return false;
-            }
-            const hashedPassword = result.rows[0].password;
-            const passwordsMatch =  await securePassword.comparePasswords(password, hashedPassword);
+
+    try {
+        const result = await pool.query(query);
+
+        if (result.rows.length === 0) {
+            return false;
+        }
+
+        const hashedPassword = result.rows[0].password;
+        const passwordsMatch =  await securePassword.comparePasswords(password, hashedPassword);
+
         return passwordsMatch;
+
     } catch (error) {
 
         console.error('An error occurred while checking password:', error);
@@ -96,7 +103,6 @@ const createUser = async (email, password) => {
  * @returns  {int} result 
  */
 const getBalance = async (userID) => {
-    try {
         const query  = {
             text: 'SELECT balance FROM users WHERE id = $1' ,
             values : [userID]
@@ -107,9 +113,6 @@ const getBalance = async (userID) => {
         } catch (error) {
             console.error ("problem when fetching balance" , error);
         }
-    }catch (error) {
-        console.error("problem before query", error);
-    }
 }
 /**
  * gets the savings goal from the database of the specified user
@@ -118,7 +121,6 @@ const getBalance = async (userID) => {
  * @returns {int} result
  */
 const getGoal = async (userID) => {
-    try {
         const query  = {
             text: 'SELECT saving_goal FROM users WHERE id = $1' ,
             values : [userID]
@@ -129,9 +131,6 @@ const getGoal = async (userID) => {
         } catch (error){
             console.error ("problem when fetching balance" , error);
         }
-    }catch{
-        console.error("problem before query", error);
-    }
 }
 /**
  * sets the balance from the database of the specified user , for when the users wants to change how much they have incase they made a mistake
